@@ -1,7 +1,9 @@
 package com.backend.jjj.cinema_api.services;
 
 import com.backend.jjj.cinema_api.dto.movies.RequestMovie;
+import com.backend.jjj.cinema_api.dto.movies.RequestMovieUpdate;
 import com.backend.jjj.cinema_api.dto.movies.ResponseMovie;
+import com.backend.jjj.cinema_api.error.InactiveMovieException;
 import com.backend.jjj.cinema_api.mapper.MoviesMapper;
 import com.backend.jjj.cinema_api.models.MoviesModel;
 import com.backend.jjj.cinema_api.repository.MoviesRepository;
@@ -26,7 +28,7 @@ public class MoviesService {
         return moviesMapper.toDto(moviesRepository.save(movie));
     }
 
-    public ResponseMovie updateMovie(String movieId,RequestMovie request) {
+    public ResponseMovie updateMovie(String movieId, RequestMovieUpdate request) {
         MoviesModel movie = getMovieById(movieId);
         moviesMapper.updateMovie(request, movie);
         if(request.image() != null && !request.image().isEmpty()){
@@ -46,6 +48,16 @@ public class MoviesService {
 
     public Page<ResponseMovie> getMovies(Pageable pageable){
         return moviesRepository.findAll(pageable).map(moviesMapper::toDto);
+    }
+
+    public ResponseMovie outOfExibition(String movieId){
+        MoviesModel movie = getMovieById(movieId);
+        if(movie.getActive()){
+            movie.setActive(false);
+        }else{
+            throw new InactiveMovieException("O filme não esta mais em exibição");
+        }
+        return moviesMapper.toDto(moviesRepository.save(movie));
     }
 
     private MoviesModel getMovieById(String id){
