@@ -24,9 +24,15 @@ public class RoomsService {
         return roomsMapper.toResponse(roomsRepository.save(roomsMapper.toEntity(request)));
     }
 
-    public Page<ResponseRoom> getAllRooms(Pageable pageable) {
-        Page<RoomsModel> page = roomsRepository.findAll(pageable);
-        return page.map(roomsMapper::toResponse);
+    public ResponseRoom updateRoom(String idRoom,RequestRoom request) {
+        RoomsModel room = getRoomById(idRoom);
+        roomsMapper.updateRoom(request,room);
+        return roomsMapper.toResponse(roomsRepository.save(room));
+    }
+
+    public List<ResponseRoom> getAllRooms() {
+        List<RoomsModel> rooms = roomsRepository.findAll();
+        return rooms.stream().map(roomsMapper::toResponse).toList();
     }
 
     public ResponseRoom getRoom(String roomId) {

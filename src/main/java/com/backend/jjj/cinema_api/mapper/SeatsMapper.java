@@ -3,8 +3,7 @@ package com.backend.jjj.cinema_api.mapper;
 import com.backend.jjj.cinema_api.dto.seats.RequestSeats;
 import com.backend.jjj.cinema_api.dto.seats.ResponseSeats;
 import com.backend.jjj.cinema_api.models.SeatsModel;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface SeatsMapper {
@@ -12,4 +11,6 @@ public interface SeatsMapper {
     SeatsModel toEntity(RequestSeats requestSeats);
     @Mapping(source = "room.name",target = "roomName")
     ResponseSeats toDto(SeatsModel seatsModel);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateSeat(RequestSeats request,@MappingTarget SeatsModel seatsModel);
 }

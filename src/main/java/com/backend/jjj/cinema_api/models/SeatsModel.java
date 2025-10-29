@@ -22,4 +22,5 @@ public class SeatsModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "roomId",name = "roomId")
     private RoomsModel room;
+    private Boolean active = true;
 }

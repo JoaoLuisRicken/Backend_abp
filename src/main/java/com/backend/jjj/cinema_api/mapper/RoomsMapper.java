@@ -13,5 +13,5 @@ public interface RoomsMapper {
     RoomsModel toEntity(RequestRoom request);
     ResponseRoom toResponse(RoomsModel room);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateRoom(RequestRoom request, @MappingTarget RoomsModel response);
+    void updateRoom(RequestRoom request, @MappingTarget RoomsModel room);
 }
