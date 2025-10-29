@@ -3,10 +3,10 @@ spring:
     name: cinema-api
 
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOST:postgres}:${POSTGRES_PORT:5432}/${DATABASE_NAME:cinemaapi}
+    url: jdbc:postgresql://${DATABASE_HOST:interchange.proxy.rlwy.net}:${POSTGRES_PORT:52329}/${DATABASE_NAME:railway}
     driver-class-name: org.postgresql.Driver
-    username: ${DATABASE_USERNAME:admin}
-    password: ${DATABASE_PASSWORD:password}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:UTOhPwlefxdExGEkJAsoAKWLcBSlyTaO}
 
   jpa:
     hibernate:
@@ -15,8 +15,8 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 minio:
-  url: ${MINIO_URL:http://localhost:9000}
-  access-key: ${MINIO_USERNAME:minioadmin}
-  secret-key: ${MINIO_PASSWORD:minioadmin}
-  bucket: ${MINIO_BUCKET:cinema-bucket}
-  response: ${MINIO_RESPONSE:http://localhost:9000}
+  url: ${MINIO_URL:https://miniosatccinema.up.railway.app}
+  access-key: ${MINIO_USERNAME:minio}
+  secret-key: ${MINIO_PASSWORD:minio123}
+  bucket: ${MINIO_BUCKET:cinema}
+  response: ${MINIO_RESPONSE:https://miniosatccinema.up.railway.app}

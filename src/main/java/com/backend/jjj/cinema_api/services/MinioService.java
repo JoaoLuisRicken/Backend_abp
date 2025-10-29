@@ -15,10 +15,10 @@ public class MinioService {
 
     private final MinioClient minioClient;
 
-    @Value("${MINIO_BUCKET}")
+    @Value("${minio.bucket}")
     private String bucket;
 
-    @Value("${MINIO_RESPONSE}")
+    @Value("${minio.response}")
     private String minioUrlResponse;
     public String uploadFile(MultipartFile file) {
         try {

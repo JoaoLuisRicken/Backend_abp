@@ -8,14 +8,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MinioConfig {
 
-    @Value("${MINIO_USERNAME}")
+    @Value("${minio.access-key}")
     private String minioUsername;
 
-    @Value("${MINIO_PASSWORD}")
+    @Value("${minio.secret-key}")
     private String minioPassword;
 
-    @Value("${MINIO_URL}")
+    @Value("${minio.url}")
     private String minioUrl;
+
 
     @Bean
     public MinioClient minioClient() {
