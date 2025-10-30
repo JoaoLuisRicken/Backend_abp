@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoomsRepository extends JpaRepository<RoomsModel, String> {
     Page<RoomsModel> findAll(Pageable pageable);
+    RoomsModel findByName(String name);
 }

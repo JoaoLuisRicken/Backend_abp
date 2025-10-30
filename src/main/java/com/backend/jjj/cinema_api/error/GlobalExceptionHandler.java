@@ -2,6 +2,7 @@ package com.backend.jjj.cinema_api.error;
 
 import com.backend.jjj.cinema_api.dto.errors.MessageResponseDto;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -62,6 +63,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new MessageResponseDto(message),HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<MessageResponseDto> handleEntityExistsException(EntityExistsException ex){
+        String message = ex.getLocalizedMessage();
+        return new ResponseEntity<>(new MessageResponseDto(message),HttpStatus.CONFLICT);
+    }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<MessageResponseDto> handleDataIntegrity(DataIntegrityViolationException ex){

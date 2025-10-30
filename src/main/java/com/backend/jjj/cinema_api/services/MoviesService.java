@@ -7,11 +7,15 @@ import com.backend.jjj.cinema_api.error.InactiveMovieException;
 import com.backend.jjj.cinema_api.mapper.MoviesMapper;
 import com.backend.jjj.cinema_api.models.MoviesModel;
 import com.backend.jjj.cinema_api.repository.MoviesRepository;
+import com.backend.jjj.cinema_api.specifications.MoviesSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -52,8 +56,14 @@ public class MoviesService {
         return moviesMapper.toDto(getMovieById(movieId));
     }
 
-    public Page<ResponseMovie> getMovies(Pageable pageable){
-        return moviesRepository.findAll(pageable).map(moviesMapper::toDto);
+    public Page<ResponseMovie> getMovies(Pageable pageable,String title, List<String> genres){
+        Specification<MoviesModel> spec = Specification.allOf(
+                MoviesSpecification.isActive(),
+                MoviesSpecification.titleContains(title),
+                MoviesSpecification.hasAnyGenre(genres)
+        );
+
+        return moviesRepository.findAll(spec,pageable).map(moviesMapper::toDto);
     }
 
     public ResponseMovie outOfExibition(String movieId){

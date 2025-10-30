@@ -5,6 +5,7 @@ import com.backend.jjj.cinema_api.dto.rooms.ResponseRoom;
 import com.backend.jjj.cinema_api.mapper.RoomsMapper;
 import com.backend.jjj.cinema_api.models.RoomsModel;
 import com.backend.jjj.cinema_api.repository.RoomsRepository;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,11 +22,15 @@ public class RoomsService {
     private final RoomsMapper roomsMapper;
 
     public ResponseRoom addRoom(RequestRoom request) {
+        existsRoom(request.name());
         return roomsMapper.toResponse(roomsRepository.save(roomsMapper.toEntity(request)));
     }
 
     public ResponseRoom updateRoom(String idRoom,RequestRoom request) {
         RoomsModel room = getRoomById(idRoom);
+        if(request.name() != null && !room.getName().equals(request.name())){
+            existsRoom(request.name());
+        }
         roomsMapper.updateRoom(request,room);
         return roomsMapper.toResponse(roomsRepository.save(room));
     }
@@ -42,5 +47,11 @@ public class RoomsService {
     private RoomsModel getRoomById(String id) {
         return roomsRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Não foi encontrada a sala"));
+    }
+
+    private void existsRoom(String name) {
+        if(roomsRepository.findByName(name) != null){
+            throw new EntityExistsException("Já existe uma sala chamada "+name);
+        }
     }
 }

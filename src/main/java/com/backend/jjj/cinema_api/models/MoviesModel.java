@@ -19,6 +19,7 @@ public class MoviesModel {
     private String title;
     private String description;
     private Integer ageRating;
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> genres;
     private Boolean active = true;
     private String imageUrl;
