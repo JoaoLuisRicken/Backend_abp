@@ -40,7 +40,7 @@ public class SessionService {
         return sessionsRepository.findById(sessionId).orElseThrow(()-> new EntityNotFoundException("Sessão não encontrada"));
     }
 
-    private ResponseSession addSession(RequestSession request){
+    public ResponseSession addSession(RequestSession request){
         if(request.startTime().isBefore(LocalDateTime.now())){
             throw new InvalidTimeException("O filme não pode ser cadastrado no passado");
         }
@@ -59,7 +59,11 @@ public class SessionService {
         }
     }
 
-    private List<ResponseSession> getSessionsByMovie(String movieId){
+    public List<ResponseSession> getSessionsByMovie(String movieId){
         return sessionsRepository.findAllByMovieMovieId(movieId).stream().map(sessionsMapper::toDto).toList();
+    }
+
+    public ResponseSession getSession(String sessionId){
+        return sessionsMapper.toDto(getSessionById(sessionId));
     }
 }

@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +24,8 @@ public class SeatsService {
         return seatsMapper.toDto(getSeatsModel(seatsId));
     }
 
-    public List<ResponseSeats> getAllSeats(){
-        return seatsRepository.findAll().stream().map(seatsMapper::toDto).toList();
+    public List<ResponseSeats> getAllSeats(String roomId){
+        return seatsRepository.findAllByRoomRoomId(roomId).stream().map(seatsMapper::toDto).toList();
     }
 
     public ResponseSeats updateSeats(String seatsId,RequestSeats request){

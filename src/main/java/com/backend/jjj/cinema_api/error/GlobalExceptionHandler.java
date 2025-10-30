@@ -62,6 +62,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new MessageResponseDto(message),HttpStatus.CONFLICT);
     }
 
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<MessageResponseDto> handleDataIntegrity(DataIntegrityViolationException ex){
         String message = ex.getLocalizedMessage();

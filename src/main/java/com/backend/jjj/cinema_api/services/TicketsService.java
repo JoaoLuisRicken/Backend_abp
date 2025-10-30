@@ -38,7 +38,7 @@ public class TicketsService {
         if(session.getType()== SessionType.PRESENCIAL){
             SeatsModel seat = getSeatById(request.seatId());
             if(!seat.getActive()){
-                throw new UnableSeatException("Acent não disponivel");
+                throw new UnableSeatException("Acento não disponivel");
             }
             if(!ticketsRepository.findBySessionSessionIdAndSeatSeatId(request.sessionId(), request.seatId()).isEmpty()){
                 throw new RuntimeException("O acento já esta ocupado");
