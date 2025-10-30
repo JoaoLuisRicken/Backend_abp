@@ -1,5 +1,6 @@
 package com.backend.jjj.cinema_api.models;
 
+import com.backend.jjj.cinema_api.enums.SessionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,5 +23,7 @@ public class SessionsModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "roomId",name = "roomId")
     private RoomsModel room;
+    @Enumerated(EnumType.STRING)
+    private SessionType type;
     private LocalDateTime startTime;
 }

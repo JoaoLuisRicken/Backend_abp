@@ -20,3 +20,8 @@ minio:
   secret-key: ${MINIO_PASSWORD:minio123}
   bucket: ${MINIO_BUCKET:cinema}
   response: ${MINIO_RESPONSE:https://miniosatccinema.up.railway.app}
+
+api:
+  jwt:
+    secretKey:
+      token: ${JWT_SECRET:digitesuachaveaqui}

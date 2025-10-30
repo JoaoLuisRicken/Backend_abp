@@ -20,4 +20,7 @@ public class TicketsModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "seatId",name = "seatId")
     private SeatsModel seat;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "userId",name = "userId")
+    private UsersModel user;
 }

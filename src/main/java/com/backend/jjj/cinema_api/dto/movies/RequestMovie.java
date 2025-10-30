@@ -16,5 +16,6 @@ public record RequestMovie(
         @Min(value = 0, message = "Classificação etária mínima é 0")
         @Max(value = 18, message = "Classificação etária máxima é 18")
         Integer ageRating,
-        MultipartFile image
+        MultipartFile image,
+        MultipartFile movie
 ) {}

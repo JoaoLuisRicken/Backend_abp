@@ -43,11 +43,23 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InactiveMovieException.class)
-    public ResponseEntity<MessageResponseDto> handleEntityNotFound(InactiveMovieException ex){
+    public ResponseEntity<MessageResponseDto> handleInactiveMovieException(InactiveMovieException ex){
         String message = ex.getLocalizedMessage();
         return new ResponseEntity<>(new MessageResponseDto(message),HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(InvalidTimeException.class)
+    public ResponseEntity<MessageResponseDto> handleInvalidTimeException(InvalidTimeException ex){
+        String message = ex.getLocalizedMessage();
+        return new ResponseEntity<>(new MessageResponseDto(message),HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(UnableSeatException.class)
+    public ResponseEntity<MessageResponseDto> handleUnableSeatException(UnableSeatException ex){
+        String message = ex.getLocalizedMessage();
+        return new ResponseEntity<>(new MessageResponseDto(message),HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<MessageResponseDto> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {

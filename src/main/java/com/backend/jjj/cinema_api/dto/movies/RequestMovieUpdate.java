@@ -10,6 +10,7 @@ public record RequestMovieUpdate(
         String description,
         List<String> genres,
         Integer ageRating,
-        MultipartFile image
+        MultipartFile image,
+        MultipartFile movie
 ) {
 }

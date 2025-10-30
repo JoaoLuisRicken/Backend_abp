@@ -25,6 +25,9 @@ public class MoviesService {
         if(request.image() != null && !request.image().isEmpty()){
             movie.setImageUrl(minioService.uploadFile(request.image()));
         }
+        if(request.movie() != null && !request.movie().isEmpty()){
+            movie.setMovieUrl(minioService.uploadFile(request.movie()));
+        }
         return moviesMapper.toDto(moviesRepository.save(movie));
     }
 
@@ -33,6 +36,9 @@ public class MoviesService {
         moviesMapper.updateMovie(request, movie);
         if(request.image() != null && !request.image().isEmpty()){
             movie.setImageUrl(minioService.uploadFile(request.image()));
+        }
+        if(request.movie() != null && !request.movie().isEmpty()){
+            movie.setMovieUrl(minioService.uploadFile(request.movie()));
         }
         return moviesMapper.toDto(moviesRepository.save(movie));
     }
@@ -63,4 +69,5 @@ public class MoviesService {
     private MoviesModel getMovieById(String id){
         return moviesRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Não foi possivel encontrar o filme"));
     }
+
 }
