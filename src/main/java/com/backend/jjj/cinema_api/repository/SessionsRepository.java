@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SessionsRepository extends JpaRepository<SessionsModel, String> {
-    List<SessionsModel> findAllByMovieId(String movieId);
+    List<SessionsModel> findAllByMovieMovieId(String movieId);
 }

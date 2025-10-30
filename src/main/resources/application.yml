@@ -3,10 +3,10 @@ spring:
     name: cinema-api
 
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOST:interchange.proxy.rlwy.net}:${POSTGRES_PORT:52329}/${DATABASE_NAME:railway}
+    url: jdbc:postgresql://${DATABASE_HOST:interchange.proxy.rlwy.net}:${POSTGRES_PORT:43842}/${DATABASE_NAME:railway}
     driver-class-name: org.postgresql.Driver
     username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:UTOhPwlefxdExGEkJAsoAKWLcBSlyTaO}
+    password: ${DATABASE_PASSWORD:gQpSNZKYAFFMcVDabsBbqsPjGDZigeAD}
 
   jpa:
     hibernate:

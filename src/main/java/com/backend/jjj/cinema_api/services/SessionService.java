@@ -28,6 +28,10 @@ public class SessionService {
         return moviesRepository.findById(movieId).isPresent();
     }
 
+    private MoviesModel getMovies(String movieId){
+        return moviesRepository.findById(movieId).get();
+    }
+
     private boolean roomExists(String roomId){
         return roomsRepository.findById(roomId).isPresent();
     }
@@ -43,6 +47,11 @@ public class SessionService {
         if(movieExists(request.movieId())){
             if(request.type() == SessionType.PRESENCIAL && !roomExists(request.roomId())) {
                 throw new EntityNotFoundException("A sala não foi encontrada");
+            }else{
+                MoviesModel movie = getMovies(request.movieId());
+                if(movie.getMovieUrl() == null){
+                    throw new RuntimeException("O filme não é valido para seções online pois não tem um filme online.");
+                }
             }
             return sessionsMapper.toDto(sessionsRepository.save(sessionsMapper.toEntity(request)));
         }else{
@@ -51,6 +60,6 @@ public class SessionService {
     }
 
     private List<ResponseSession> getSessionsByMovie(String movieId){
-        return sessionsRepository.findAllByMovieId(movieId).stream().map(sessionsMapper::toDto).toList();
+        return sessionsRepository.findAllByMovieMovieId(movieId).stream().map(sessionsMapper::toDto).toList();
     }
 }

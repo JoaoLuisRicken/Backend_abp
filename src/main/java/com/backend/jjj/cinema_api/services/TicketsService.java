@@ -40,7 +40,7 @@ public class TicketsService {
             if(!seat.getActive()){
                 throw new UnableSeatException("Acent não disponivel");
             }
-            if(!ticketsRepository.findBySessionIdAndSeatId(request.sessionId(), request.seatId()).isEmpty()){
+            if(!ticketsRepository.findBySessionSessionIdAndSeatSeatId(request.sessionId(), request.seatId()).isEmpty()){
                 throw new RuntimeException("O acento já esta ocupado");
             }
         }

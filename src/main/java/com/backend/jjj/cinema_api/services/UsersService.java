@@ -11,6 +11,7 @@ import com.backend.jjj.cinema_api.models.UsersModel;
 import com.backend.jjj.cinema_api.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,9 @@ public class UsersService {
     }
 
     public ResponseUser addClient(RequestUser request) {
+        if(checkEmail(request.email())){
+            throw new DataIntegrityViolationException("Email não disponivel");
+        }
         UsersModel user = usersMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(UserRole.CLIENT);
@@ -41,14 +45,27 @@ public class UsersService {
     }
 
     public ResponseUser addEmployee(RequestUser request) {
+        if(checkEmail(request.email())){
+            throw new DataIntegrityViolationException("Email não disponivel");
+        }
         UsersModel user = usersMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(UserRole.EMPLOYEE);
         return usersMapper.toResponse(usersRepository.save(user));
     }
 
-    public ResponseUser updateUser(String userId, RequestUserUpdate request) {
-        UsersModel user = getUserById(userId);
+    public ResponseUser addAdmin(RequestUser request) {
+        if(checkEmail(request.email())){
+            throw new DataIntegrityViolationException("Email não disponivel");
+        }
+        UsersModel user = usersMapper.toEntity(request);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(UserRole.ADMIN);
+        return usersMapper.toResponse(usersRepository.save(user));
+    }
+
+    public ResponseUser updateUser(RequestUserUpdate request) {
+        UsersModel user = AuthorizationService.getAccount();
         usersMapper.updateUser(request, user);
         return usersMapper.toResponse(usersRepository.save(user));
     }
@@ -62,7 +79,11 @@ public class UsersService {
        return usersRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Não foi encontrado o usuario"));
     }
 
-    private ResponseUser getUser(String userId) {
-        return usersMapper.toResponse(getUserById(userId));
+    public ResponseUser getUser() {
+        return usersMapper.toResponse(AuthorizationService.getAccount());
+    }
+
+    private boolean checkEmail(String email) {
+        return usersRepository.findByEmail(email) != null;
     }
 }

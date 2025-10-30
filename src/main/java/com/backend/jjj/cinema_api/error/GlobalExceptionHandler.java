@@ -3,6 +3,7 @@ package com.backend.jjj.cinema_api.error;
 import com.backend.jjj.cinema_api.dto.errors.MessageResponseDto;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -58,7 +59,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnableSeatException.class)
     public ResponseEntity<MessageResponseDto> handleUnableSeatException(UnableSeatException ex){
         String message = ex.getLocalizedMessage();
-        return new ResponseEntity<>(new MessageResponseDto(message),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new MessageResponseDto(message),HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<MessageResponseDto> handleDataIntegrity(DataIntegrityViolationException ex){
+        String message = ex.getLocalizedMessage();
+        return new ResponseEntity<>(new MessageResponseDto(message),HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

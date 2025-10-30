@@ -23,6 +23,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.csrf(csrf -> csrf.disable());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/users/admin","/users/employee").hasAuthority("ADMIN"));
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/users/account","/users").authenticated());
         http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         http.addFilterBefore(securityFilter,UsernamePasswordAuthenticationFilter.class);
         return http.build();

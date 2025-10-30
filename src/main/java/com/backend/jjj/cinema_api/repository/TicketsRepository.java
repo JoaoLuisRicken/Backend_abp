@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TicketsRepository extends JpaRepository<TicketsModel,String> {
-    List<TicketsModel> findBySessionIdAndSeatId(String sessionId,String seatId);
+    List<TicketsModel> findBySessionSessionIdAndSeatSeatId(String sessionId,String seatId);
     List<TicketsModel> findByUser(UsersModel user);
 }
