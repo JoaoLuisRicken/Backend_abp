@@ -20,6 +20,7 @@ services:
       MINIO_PASSWORD: ${MINIO_PASSWORD:-minioadmin}
       MINIO_BUCKET: ${MINIO_BUCKET:-cinema}
       JWT_SECRET: ${JWT_SECRET:-palavrasecreta}
+      BACKEND_PORT: ${BACKEND_PORT:-8080}
     networks:
       - public_network
     restart: always
