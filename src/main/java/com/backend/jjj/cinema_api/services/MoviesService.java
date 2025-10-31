@@ -32,7 +32,7 @@ public class MoviesService {
         if(request.movie() != null && !request.movie().isEmpty()){
             movie.setMovieUrl(minioService.uploadFile(request.movie()));
         }
-        return moviesMapper.toDto(moviesRepository.save(movie));
+        return moviesMapper.toDto(moviesRepository.save(movie),minioService);
     }
 
     public ResponseMovie updateMovie(String movieId, RequestMovieUpdate request) {
@@ -44,7 +44,7 @@ public class MoviesService {
         if(request.movie() != null && !request.movie().isEmpty()){
             movie.setMovieUrl(minioService.uploadFile(request.movie()));
         }
-        return moviesMapper.toDto(moviesRepository.save(movie));
+        return moviesMapper.toDto(moviesRepository.save(movie),minioService);
     }
 
     public void deleteMovie(String movieId) {
@@ -53,7 +53,7 @@ public class MoviesService {
     }
 
     public ResponseMovie getMovie(String movieId){
-        return moviesMapper.toDto(getMovieById(movieId));
+        return moviesMapper.toDto(getMovieById(movieId),minioService);
     }
 
     public Page<ResponseMovie> getMovies(Pageable pageable,String title, List<String> genres){
@@ -63,7 +63,8 @@ public class MoviesService {
                 MoviesSpecification.hasAnyGenre(genres)
         );
 
-        return moviesRepository.findAll(spec,pageable).map(moviesMapper::toDto);
+        return moviesRepository.findAll(spec, pageable)
+                .map(movie -> moviesMapper.toDto(movie, minioService));
     }
 
     public ResponseMovie outOfExibition(String movieId){
@@ -73,7 +74,7 @@ public class MoviesService {
         }else{
             throw new InactiveMovieException("O filme não esta mais em exibição");
         }
-        return moviesMapper.toDto(moviesRepository.save(movie));
+        return moviesMapper.toDto(moviesRepository.save(movie),minioService);
     }
 
     private MoviesModel getMovieById(String id){

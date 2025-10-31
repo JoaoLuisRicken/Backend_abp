@@ -15,7 +15,11 @@ public record RequestMovie(
         List<@NotBlank(message = "Gênero não pode ser vazio") String> genres,
         @Min(value = 0, message = "Classificação etária mínima é 0")
         @Max(value = 18, message = "Classificação etária máxima é 18")
+        @NotNull(message = "O filme deve ter indicação")
         Integer ageRating,
+        @Min(value = 1,message = "O filme deve ter no minimo 1 minuto")
+        @NotNull(message = "O filme deve ter duração")
+        Integer duration,
         MultipartFile image,
         MultipartFile movie
 ) {}

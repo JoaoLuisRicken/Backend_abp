@@ -50,30 +50,30 @@ public class SessionService {
             throw new InvalidTimeException("O filme não pode ser cadastrado no passado");
         }
         SessionsModel session = sessionsMapper.toEntity(request);
-        if(movieExists(request.movieId())){
-            if(request.type() == SessionType.PRESENCIAL) {
-                if(request.roomId() == null || request.roomId().isEmpty()){
-                    throw new RuntimeException("O id da sala não pode ser nulo em sessões presenciais");
-                }
-                if(!roomExists(request.roomId())) {
-                    throw new EntityNotFoundException("A sala não foi encontrada");
-                }
-            }else{
-                session.setRoom(null);
-                MoviesModel movie = getMovies(request.movieId());
-                if(movie.getMovieUrl() == null){
-                    throw new RuntimeException("O filme não é valido para seções online pois não tem um filme online.");
-                }
-            }
-            return sessionsMapper.toDto(sessionsRepository.save(session));
-        }else{
+        if(!movieExists(request.movieId())){
             throw new EntityNotFoundException("O filme não foi encontrado");
         }
+        MoviesModel movie = getMovies(request.movieId());
+        if(request.type() == SessionType.PRESENCIAL) {
+            if(request.roomId() == null || request.roomId().isEmpty()){
+                throw new RuntimeException("O id da sala não pode ser nulo em sessões presenciais");
+            }
+            if(!roomExists(request.roomId())) {
+                throw new EntityNotFoundException("A sala não foi encontrada");
+            }
+        }else{
+            session.setRoom(null);
+            if(movie.getMovieUrl() == null){
+                throw new RuntimeException("O filme não é valido para seções online pois não tem um filme online.");
+            }
+        }
+        LocalDateTime endTime = session.getStartTime().plusMinutes(movie.getDuration());
+        session.setEndTime(endTime);
+        return sessionsMapper.toDto(sessionsRepository.save(session));
     }
 
     public Page<ResponseSession> getSessionsByMovie(String movieId, LocalDate date, Pageable pageable){
-        Specification<SessionsModel> spec = Specification.allOf(SessionsSpecification.hasDate(date),SessionsSpecification.hasMovieId(movieId));
-        System.out.println(sessionsRepository.findAll(spec,pageable));
+        Specification<SessionsModel> spec = Specification.allOf(SessionsSpecification.hasDate(date),SessionsSpecification.hasMovieId(movieId),SessionsSpecification.isActive());
         return sessionsRepository.findAll(spec,pageable).map(sessionsMapper::toDto);
     }
 

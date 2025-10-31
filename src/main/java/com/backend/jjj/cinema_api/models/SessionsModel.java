@@ -26,4 +26,5 @@ public class SessionsModel {
     @Enumerated(EnumType.STRING)
     private SessionType type;
     private LocalDateTime startTime;
+    private LocalDateTime endTime;
 }

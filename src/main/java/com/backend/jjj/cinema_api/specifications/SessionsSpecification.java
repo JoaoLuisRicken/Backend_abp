@@ -20,4 +20,11 @@ public class SessionsSpecification {
         return (root, query, cb) ->
                 cb.between(root.get("startTime"), startOfDay, endOfDay);
     }
+
+    public static Specification<SessionsModel> isActive() {
+        return (root, query, cb) -> {
+            LocalDateTime now = LocalDateTime.now();
+            return cb.greaterThan(root.get("endTime"), now);
+        };
+    }
 }
