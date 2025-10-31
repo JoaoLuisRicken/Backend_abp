@@ -35,6 +35,7 @@ public class TicketsService {
 
     public ResponseTicket addTicket(RequestTicket request){
         SessionsModel session = getSessionById(request.sessionId());
+        TicketsModel ticket = ticketsMapper.toEntity(request);
         if(session.getType()== SessionType.PRESENCIAL){
             SeatsModel seat = getSeatById(request.seatId());
             if(!seat.getActive()){
@@ -43,8 +44,9 @@ public class TicketsService {
             if(!ticketsRepository.findBySessionSessionIdAndSeatSeatId(request.sessionId(), request.seatId()).isEmpty()){
                 throw new RuntimeException("O acento já esta ocupado");
             }
+        }else{
+            ticket.setSeat(null);
         }
-        TicketsModel ticket = ticketsMapper.toEntity(request);
         ticket.setUser(AuthorizationService.getAccount());
         return ticketsMapper.toDto(ticketsRepository.save(ticket));
     }

@@ -10,10 +10,15 @@ import com.backend.jjj.cinema_api.models.SessionsModel;
 import com.backend.jjj.cinema_api.repository.MoviesRepository;
 import com.backend.jjj.cinema_api.repository.RoomsRepository;
 import com.backend.jjj.cinema_api.repository.SessionsRepository;
+import com.backend.jjj.cinema_api.specifications.SessionsSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,23 +49,32 @@ public class SessionService {
         if(request.startTime().isBefore(LocalDateTime.now())){
             throw new InvalidTimeException("O filme não pode ser cadastrado no passado");
         }
+        SessionsModel session = sessionsMapper.toEntity(request);
         if(movieExists(request.movieId())){
-            if(request.type() == SessionType.PRESENCIAL && !roomExists(request.roomId())) {
-                throw new EntityNotFoundException("A sala não foi encontrada");
+            if(request.type() == SessionType.PRESENCIAL) {
+                if(request.roomId() == null || request.roomId().isEmpty()){
+                    throw new RuntimeException("O id da sala não pode ser nulo em sessões presenciais");
+                }
+                if(!roomExists(request.roomId())) {
+                    throw new EntityNotFoundException("A sala não foi encontrada");
+                }
             }else{
+                session.setRoom(null);
                 MoviesModel movie = getMovies(request.movieId());
                 if(movie.getMovieUrl() == null){
                     throw new RuntimeException("O filme não é valido para seções online pois não tem um filme online.");
                 }
             }
-            return sessionsMapper.toDto(sessionsRepository.save(sessionsMapper.toEntity(request)));
+            return sessionsMapper.toDto(sessionsRepository.save(session));
         }else{
             throw new EntityNotFoundException("O filme não foi encontrado");
         }
     }
 
-    public List<ResponseSession> getSessionsByMovie(String movieId){
-        return sessionsRepository.findAllByMovieMovieId(movieId).stream().map(sessionsMapper::toDto).toList();
+    public Page<ResponseSession> getSessionsByMovie(String movieId, LocalDate date, Pageable pageable){
+        Specification<SessionsModel> spec = Specification.allOf(SessionsSpecification.hasDate(date),SessionsSpecification.hasMovieId(movieId));
+        System.out.println(sessionsRepository.findAll(spec,pageable));
+        return sessionsRepository.findAll(spec,pageable).map(sessionsMapper::toDto);
     }
 
     public ResponseSession getSession(String sessionId){
