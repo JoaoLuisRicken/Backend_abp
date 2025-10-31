@@ -4,7 +4,7 @@ services:
   spring:
     build:
       context: ./
-      dockerfile: src/Dockerfile
+      dockerfile: Dockerfile
     container_name: spring
     ports:
       - "${BACKEND_PORT:-8080}:8080"
