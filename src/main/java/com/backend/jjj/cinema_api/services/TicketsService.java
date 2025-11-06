@@ -70,6 +70,19 @@ public class TicketsService {
         return ticketsRepository.findById(ticketId).orElseThrow(()-> new EntityNotFoundException("Ingresso não encontrado"));
     }
 
+    public Long getCurrentPosition(String ticketId){
+        TicketsModel ticket = getTicketById(ticketId);
+        SessionsModel session = ticket.getSession();
+        MoviesModel movie = session.getMovie();
+
+        LocalDateTime now = LocalDateTime.now();
+        Long secondsElapsed = Duration.between(session.getStartTime(),now).toSeconds();
+        Long totalDuration = movie.getDuration() * 60L;
+        if(secondsElapsed > totalDuration){
+            secondsElapsed = totalDuration;
+        }
+        return secondsElapsed;
+    }
     public InputStream streamSession(String ticketId) throws IOException {
         TicketsModel ticket = getTicketById(ticketId);
         LocalDateTime now  = LocalDateTime.now();

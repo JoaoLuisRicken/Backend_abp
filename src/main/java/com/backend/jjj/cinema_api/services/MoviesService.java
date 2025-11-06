@@ -31,6 +31,7 @@ public class MoviesService {
         }
         if(request.movie() != null && !request.movie().isEmpty()){
             movie.setMovieUrl(minioService.uploadFile(request.movie()));
+            movie.setDuration(minioService.getDuration(movie.getMovieUrl()));
         }
         return moviesMapper.toDto(moviesRepository.save(movie),minioService);
     }
@@ -43,6 +44,7 @@ public class MoviesService {
         }
         if(request.movie() != null && !request.movie().isEmpty()){
             movie.setMovieUrl(minioService.uploadFile(request.movie()));
+            movie.setDuration(minioService.getDuration(movie.getMovieUrl()));
         }
         return moviesMapper.toDto(moviesRepository.save(movie),minioService);
     }

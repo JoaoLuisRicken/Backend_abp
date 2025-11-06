@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 @Service
 @RequiredArgsConstructor
@@ -75,4 +77,35 @@ public class MinioService {
             throw new RuntimeException("Erro ao acessar arquivo no MinIO", e);
         }
     }
+
+    public Integer getDuration(String objectName) {
+        try {
+            String videoUrl = getFileUrl(objectName);
+
+            ProcessBuilder pb = new ProcessBuilder(
+                    "ffprobe",
+                    "-v", "error",
+                    "-show_entries", "format=duration",
+                    "-of", "default=noprint_wrappers=1:nokey=1",
+                    videoUrl
+            );
+
+            Process process = pb.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String durationStr = reader.readLine();
+            process.waitFor();
+
+            if (durationStr != null) {
+                double seconds = Double.parseDouble(durationStr);
+                return (int) Math.round(seconds / 60.0);
+            } else {
+                throw new RuntimeException("Não foi possível obter a duração do vídeo.");
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao acessar arquivo no MinIO", e);
+        }
+    }
+
 }

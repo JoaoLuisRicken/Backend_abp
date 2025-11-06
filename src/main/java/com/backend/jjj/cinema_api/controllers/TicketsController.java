@@ -38,6 +38,7 @@ public class TicketsController {
     }
 
     @GetMapping(value = "/online-session/{ticketId}", produces = "video/mp4")
+    @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public void viewMovie(@PathVariable("ticketId") String ticketId, HttpServletResponse response) {
         try (InputStream videoStream = ticketsService.streamSession(ticketId)) {
             response.setContentType("video/mp4");
@@ -47,5 +48,11 @@ public class TicketsController {
             throw new RuntimeException("Erro ao transmitir o vídeo", e);
         }
     }
+
+    @GetMapping(value = "/online-session/{ticketId}/position")
+    public Long getSessionPosition(@PathVariable("ticketId") String ticketId) {
+        return ticketsService.getCurrentPosition(ticketId);
+    }
+
 
 }

@@ -12,6 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -22,28 +27,45 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable());
-
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/users/admin").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/users/employee").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/users/account").authenticated()
-                .requestMatchers(HttpMethod.PATCH, "/users").authenticated()
-                .requestMatchers(HttpMethod.POST, "/rooms").hasAnyAuthority("ADMIN", "EMPLOYEE")
-                .requestMatchers(HttpMethod.PATCH, "/rooms/**").hasAnyAuthority("ADMIN", "EMPLOYEE")
-                .requestMatchers(HttpMethod.POST, "/seats").hasAnyAuthority("ADMIN", "EMPLOYEE")
-                .requestMatchers(HttpMethod.PATCH, "/seats/**").hasAnyAuthority("ADMIN", "EMPLOYEE")
-                .requestMatchers(HttpMethod.POST, "/sessions").hasAnyAuthority("ADMIN", "EMPLOYEE")
-                .requestMatchers("/tickets", "/tickets/**").authenticated()
-                .requestMatchers(HttpMethod.POST,"/movies").hasAnyAuthority("ADMIN", "EMPLOYEE")
-                .requestMatchers(HttpMethod.PATCH,"/movies/**").hasAnyAuthority("ADMIN", "EMPLOYEE")
-                .anyRequest().permitAll()
-        );
-
-        // Filtro JWT
-        http.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 👈 habilita o CORS dentro do Security
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/users/admin").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/users/employee").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users/account").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/users").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/rooms").hasAnyAuthority("ADMIN", "EMPLOYEE")
+                        .requestMatchers(HttpMethod.PATCH, "/rooms/**").hasAnyAuthority("ADMIN", "EMPLOYEE")
+                        .requestMatchers(HttpMethod.POST, "/seats").hasAnyAuthority("ADMIN", "EMPLOYEE")
+                        .requestMatchers(HttpMethod.PATCH, "/seats/**").hasAnyAuthority("ADMIN", "EMPLOYEE")
+                        .requestMatchers(HttpMethod.POST, "/sessions").hasAnyAuthority("ADMIN", "EMPLOYEE")
+                        .requestMatchers("/tickets", "/tickets/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/movies").hasAnyAuthority("ADMIN", "EMPLOYEE")
+                        .requestMatchers(HttpMethod.PATCH, "/movies/**").hasAnyAuthority("ADMIN", "EMPLOYEE")
+                        .requestMatchers("/error").permitAll()
+                        .anyRequest().permitAll()
+                )
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "http://127.0.0.1:5173"
+        ));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("*"));
+        config.setAllowCredentials(true); // 👈 necessário para Authorization: Bearer
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
     @Bean
