@@ -4,6 +4,7 @@ import com.backend.jjj.cinema_api.dto.movies.RequestMovie;
 import com.backend.jjj.cinema_api.dto.movies.RequestMovieUpdate;
 import com.backend.jjj.cinema_api.dto.movies.ResponseMovie;
 import com.backend.jjj.cinema_api.models.MoviesModel;
+import com.backend.jjj.cinema_api.models.MoviesSnapshotsModel;
 import com.backend.jjj.cinema_api.services.MinioService;
 import org.mapstruct.*;
 
@@ -14,4 +15,7 @@ public interface MoviesMapper {
     ResponseMovie toDto(MoviesModel movie,@Context MinioService minioService);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateMovie(RequestMovieUpdate request, @MappingTarget MoviesModel movie);
+    @Mapping(target = "movieId", ignore = true)
+    void updateMovieFromSnapshot(MoviesSnapshotsModel snapshot, @MappingTarget MoviesModel movie);
+
 }

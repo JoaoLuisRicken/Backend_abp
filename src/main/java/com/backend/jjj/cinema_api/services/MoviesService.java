@@ -23,9 +23,12 @@ public class MoviesService {
     private final MoviesRepository moviesRepository;
     private final MoviesMapper moviesMapper;
     private final MinioService minioService;
+    private final MoviesSnapshotsServices moviesSnapshotsServices;
+
 
     public ResponseMovie addMovie(RequestMovie request) {
         MoviesModel movie = moviesMapper.toEntity(request);
+        moviesSnapshotsServices.saveSnapshot(movie);
         if(request.image() != null && !request.image().isEmpty()){
             movie.setImageUrl(minioService.uploadFile(request.image()));
         }
@@ -38,6 +41,7 @@ public class MoviesService {
 
     public ResponseMovie updateMovie(String movieId, RequestMovieUpdate request) {
         MoviesModel movie = getMovieById(movieId);
+        moviesSnapshotsServices.saveSnapshot(movie);
         moviesMapper.updateMovie(request, movie);
         if(request.image() != null && !request.image().isEmpty()){
             movie.setImageUrl(minioService.uploadFile(request.image()));
@@ -82,5 +86,6 @@ public class MoviesService {
     private MoviesModel getMovieById(String id){
         return moviesRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Não foi possivel encontrar o filme"));
     }
+
 
 }

@@ -43,6 +43,9 @@ public class SecurityConfig {
                         .requestMatchers("/tickets", "/tickets/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/movies").hasAnyAuthority("ADMIN", "EMPLOYEE")
                         .requestMatchers(HttpMethod.PATCH, "/movies/**").hasAnyAuthority("ADMIN", "EMPLOYEE")
+                        .requestMatchers(HttpMethod.PATCH, "/movies/snapshot").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/movies/snapshot/**").hasAuthority("ADMIN")
+
                         .requestMatchers("/error").permitAll()
                         .anyRequest().permitAll()
                 )
